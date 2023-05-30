@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  rss-persistor:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html:ro
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    networks:
+      - rss-persistor
+  mariadb:
+    image: mariadb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - ./mariadb:/var/lib/mysql:rw
+    networks:
+      - rss-persistor
+networks:
+  rss-persistor:
