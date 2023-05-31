@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace neonjs\rsspersistor;
 
+require_once __DIR__ . '/database/RssEntry.php';
+require_once __DIR__ . '/database/RssEntryStorage.php';
+require_once __DIR__ . '/persistence/RssPersistenceService.php';
+require_once __DIR__ . '/rss/RssStreamProvider.php';
+
 use \neonjs\rsspersistor\persistence\RssPersistenceService;
 use \neonjs\rsspersistor\database\RssEntryStorage;
 use \neonjs\rsspersistor\rss\RssStreamProvider;
-
-spl_autoload_register(function (string $className) {
-    $fileName = str_replace('\\', '/', $className) . '.php';
-    include __DIR__ . '/../../' . $fileName;
-});
 
 $rssStreamProvider = new RssStreamProvider();
 $rssEntryStorage = new RssEntryStorage();
