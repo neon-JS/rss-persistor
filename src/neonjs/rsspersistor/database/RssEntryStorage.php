@@ -39,7 +39,8 @@ readonly class RssEntryStorage
                 `guid` VARCHAR(255) NOT NULL UNIQUE,
                 `link` VARCHAR(255) NULL,
                 `publicationDate` DATETIME NULL,
-                `category` VARCHAR(255) NULL
+                `category` VARCHAR(255) NULL,
+                `relevant` TINYINT(1) DEFAULT 0 NOT NULL
             )
             DEFAULT CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`
         ");
