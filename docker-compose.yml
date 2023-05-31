@@ -24,8 +24,12 @@ services:
     env_file:
       - .env
     volumes:
-      - ./mariadb:/var/lib/mysql:rw
+    # enable for dev enviroment
+    #  - ./mariadb:/var/lib/mysql:rw
+      - mariadb:/var/lib/mysql:rw
     networks:
       - rss-persistor
 networks:
   rss-persistor:
+volumes:
+  mariadb:
