@@ -74,33 +74,45 @@ readonly class RssEntryMapper
 
     public function store(RssEntry $rssEntry, array $titleWords): void
     {
-        /* Use INSERT IGNORE instead of ON DUPLICATE KEY UPDATE as in the last case,
-         * the ID will always be incremented, leading to some strange results. */
         $insertEntry = $this->pdo->prepare("
-            INSERT IGNORE INTO `entry`
-            SET
-                `title` = :title,
-                `guid` = :guid,
-                `link` = :link,
-                `publicationDate` = :publicationDate,
-                `category` = :category
+            INSERT INTO `entry`
+                (`title`, `guid`, `link`, `publicationDate`, `category`)
+            SELECT
+                :title, :guid, :link, :publicationDate, :category
+            WHERE NOT EXISTS (
+                SELECT *
+                FROM `entry`
+                WHERE `guid` = :guid
+            )   
         ");
 
         $insertWord = $this->pdo->prepare("
-            INSERT IGNORE INTO `word`
-            SET `word` = :word
+            INSERT INTO `word` (`word`)
+            SELECT :word
+            WHERE NOT EXISTS (
+                SELECT *
+                FROM `word`
+                WHERE `word` = :word
+            )
         ");
 
         $referenceWord = $this->pdo->prepare("
-            INSERT IGNORE INTO `titleWord`
+            INSERT INTO `titleWord`
                 (`entryId`, `wordId`)
             SELECT
-                `entry`.`id`,
-                `word`.`id`
-            FROM `word`, `entry`
+                `entry`.`id`, `word`.`id`
+            FROM `word`
+            
+            INNER JOIN `entry`
+                ON `entry`.`guid` = :guid
+
+            LEFT JOIN (SELECT * FROM `titleWord`) AS `existing`
+                ON `existing`.`entryId` = `entry`.`id`
+                AND `existing`.`wordId` = `word`.`id`
+
             WHERE
                 `word`.`word` = :word
-                AND `entry`.`guid` = :guid
+                AND `existing`.`id` IS NULL
         ");
 
         $insertEntry->execute([
