@@ -1,5 +1,10 @@
-FROM php:8.2-cli
+FROM php:8.2-cli AS base
 RUN docker-php-ext-install pdo pdo_mysql
+
+WORKDIR /var/www/html/
+COPY src/ .
+
+FROM base AS setup
 
 # see: https://stackoverflow.com/a/37458519
 RUN apt update && apt upgrade -y
