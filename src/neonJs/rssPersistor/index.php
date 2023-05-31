@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace neonJs\rssPersistor;
+namespace neonjs\rsspersistor;
 
-use \neonJs\rssPersistor\persistence\RssPersistenceService;
-use \neonJs\rssPersistor\database\RssEntryMapper;
-use neonJs\rssPersistor\rss\StreamProvider;
+use \neonjs\rsspersistor\persistence\RssPersistenceService;
+use \neonjs\rsspersistor\database\RssEntryStorage;
+use \neonjs\rsspersistor\rss\RssStreamProvider;
 
 spl_autoload_register(function (string $className) {
     $fileName = str_replace('\\', '/', $className) . '.php';
     include __DIR__ . '/../../' . $fileName;
 });
 
-$streamProvider = new StreamProvider();
-$rssEntryMapper = new RssEntryMapper();
-$rssPersistenceService = new RssPersistenceService($streamProvider, $rssEntryMapper);
+$rssStreamProvider = new RssStreamProvider();
+$rssEntryStorage = new RssEntryStorage();
+$rssPersistenceService = new RssPersistenceService($rssStreamProvider, $rssEntryStorage);
 
-$rssEntryMapper->initializeTables();
+$rssEntryStorage->initializeTables();
 $rssPersistenceService->persistStream();
 
 echo "Updated database" . PHP_EOL;

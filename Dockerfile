@@ -5,14 +5,13 @@ WORKDIR /var/www/html/
 COPY src/ .
 
 FROM base AS setup
-
 # see: https://stackoverflow.com/a/37458519
 RUN apt update && apt upgrade -y
 RUN apt install -y curl cron
 
 # Add cron
 RUN touch /etc/cron.d/persist-rss
-RUN echo "0 */12 * * * /usr/local/bin/php /var/www/html/neonJs/rssPersistor/index.php >> /var/log/cron.log 2>&1" >>  /etc/cron.d/persist-rss
+RUN echo "0 */12 * * * /usr/local/bin/php /var/www/html/neonjs/rsspersistor/index.php >> /var/log/cron.log 2>&1" >>  /etc/cron.d/persist-rss
 
 RUN chmod 0644 /etc/cron.d/persist-rss
 RUN crontab /etc/cron.d/persist-rss

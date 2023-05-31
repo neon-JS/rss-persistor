@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace neonJs\rssPersistor\database;
+namespace neonjs\rsspersistor\database;
 
 use \Exception;
 use \PDO;
 
-readonly class RssEntryMapper
+readonly class RssEntryStorage
 {
     private const ENV_KEY_DSN = 'dsn';
     private const ENV_KEY_USER = 'user';

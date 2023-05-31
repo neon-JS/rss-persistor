@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace neonJs\rssPersistor\rss;
+namespace neonjs\rsspersistor\rss;
 
 use Exception;
 use SimpleXMLElement;
 
-readonly class StreamProvider
-implements IStreamProvider
+readonly class RssStreamProvider
 {
     private const ENV_KEY_URL = 'url';
 

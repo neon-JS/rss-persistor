@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace neonJs\rssPersistor\persistence;
+namespace neonjs\rsspersistor\persistence;
 
 use \DateTimeImmutable;
 use \DateTimeInterface;
-use \neonJs\rssPersistor\database\RssEntryMapper;
-use \neonJs\rssPersistor\database\RssEntry;
-use \neonJs\rssPersistor\rss\IStreamProvider;
+use \neonjs\rsspersistor\database\RssEntryStorage;
+use \neonjs\rsspersistor\database\RssEntry;
+use \neonjs\rsspersistor\rss\RssStreamProvider;
 
 readonly class RssPersistenceService
 {
     private const VALID_WORD_PATTERN = '/([a-z0-9-öäüßÄÖÜẞ]+)/i';
 
     public function __construct(
-        private IStreamProvider $streamProvider,
-        private RssEntryMapper $rssEntryMapper,
+        private RssStreamProvider $rssStreamProvider,
+        private RssEntryStorage $rssEntryStorage,
     ) {
     }
 
     public function persistStream(): void
     {
-        $streamData = $this->streamProvider->provide();
+        $streamData = $this->rssStreamProvider->provide();
 
         foreach ($streamData->channel->item as $child) {
             $title = (string)($child->title ?? null);
@@ -46,7 +46,7 @@ readonly class RssPersistenceService
 
             $titleWords = $this->extractWords($rssEntry);
 
-            $this->rssEntryMapper->store($rssEntry, $titleWords);
+            $this->rssEntryStorage->store($rssEntry, $titleWords);
         }
     }
 
