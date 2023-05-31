@@ -25,11 +25,12 @@ readonly class RssPersistenceService
         $streamData = $this->rssStreamProvider->provide();
 
         foreach ($streamData->channel->item as $child) {
-            $title = (string)($child->title ?? null);
-            $guid = (string)($child->guid ?? null);
-            $link = (string)($child->link ?? null);
-            $category = (string)($child->category ?? null);
-            $pubDate = (string)($child->pubDate ?? null);
+            $title = !empty($child->title) ? (string)$child->title : null;
+            $guid = !empty($child->guid) ? (string)$child->guid : null;
+            $link = !empty($child->link) ? (string)$child->link : null;
+            $category = !empty($child->category) ? (string)$child->category : null;
+            $pubDate = !empty($child->pubDate) ? (string)$child->pubDate : null;
+
             $publicationDate = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC7231, $pubDate) ?: null;
 
             if (empty($title) || empty($guid)) {
