@@ -1,21 +1,22 @@
-FROM php:8.2-cli AS base
+FROM php:8.2-cli-alpine AS base
 RUN docker-php-ext-install pdo pdo_mysql
 
 WORKDIR /var/www/html/
 COPY src/ .
 
 FROM base AS setup
-# see: https://stackoverflow.com/a/37458519
-RUN apt update && apt upgrade -y
-RUN apt install -y curl cron
+WORKDIR /app
+
+RUN apk update && apk upgrade
+RUN apk add curl
 
 # Add cron
-RUN touch /etc/cron.d/persist-rss
-RUN echo "0 */12 * * * /usr/local/bin/php /var/www/html/neonjs/rsspersistor/index.php >> /var/log/cron.log 2>&1" >>  /etc/cron.d/persist-rss
+RUN touch persist-rss
+RUN echo "0 */12 * * * /usr/local/bin/php /var/www/html/neonjs/rsspersistor/index.php >> /var/log/cron.log 2>&1" >>  persist-rss
 
-RUN chmod 0644 /etc/cron.d/persist-rss
-RUN crontab /etc/cron.d/persist-rss
+RUN chmod 0644 persist-rss
+RUN crontab persist-rss
 RUN touch /var/log/cron.log
 
 # Start cron
-CMD env >> /etc/environment && cron && tail -f /var/log/cron.log
+CMD env >> /etc/environment && crond && tail -f /var/log/cron.log
